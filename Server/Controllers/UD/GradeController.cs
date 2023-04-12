@@ -33,9 +33,9 @@ namespace CSBA6.Server.Controllers.app
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CourseController : BaseController
+    public class GradeController : BaseController
     {
-        public CourseController(DOOROracleContext _DBcontext,
+        public GradeController(DOOROracleContext _DBcontext,
             OraTransMsgs _OraTransMsgs)
             : base(_DBcontext, _OraTransMsgs)
 
@@ -44,63 +44,69 @@ namespace CSBA6.Server.Controllers.app
 
 
         [HttpGet]
-        [Route("GetCourse")]
-        public async Task<IActionResult> GetCourse()
+        [Route("GetGrade")]
+        public async Task<IActionResult> GetGrade()
         {
-            List<CourseDTO> lst = await _context.Courses
-                .Select(sp => new CourseDTO
+            List<GradeDTO> lst = await _context.Grades
+                .Select(sp => new GradeDTO
                 {
-                    Cost = sp.Cost,
-                    CourseNo = sp.CourseNo,
+                    SchoolId = sp.SchoolId,
+                    StudentId = sp.StudentId,
                     CreatedBy = sp.CreatedBy,
                     CreatedDate = sp.CreatedDate,
-                    Description = sp.Description,
+                    SectionId = sp.SectionId,
                     ModifiedBy = sp.ModifiedBy,
                     ModifiedDate = sp.ModifiedDate,
-                    Prerequisite = sp.Prerequisite
+                    GradeTypeCode = sp.GradeTypeCode,
+                    GradeCodeOccurrence = sp.GradeCodeOccurrence,
+                    NumericGrade = sp.NumericGrade,
+                    Comments = sp.Comments
+
                 }).ToListAsync();
             return Ok(lst);
         }
 
 
         [HttpGet]
-        [Route("GetCourse/{_CourseNo}")]
-        public async Task<IActionResult> GetCourse(int _CourseNo)
+        [Route("GetGrade/{_SchoolId}")]
+        public async Task<IActionResult> GetGrade(int _SchoolId)
         {
-            CourseDTO? lst = await _context.Courses
-                .Where(x => x.CourseNo == _CourseNo)
-                .Select(sp => new CourseDTO
+            GradeDTO? lst = await _context.Grades
+                .Where(x => x.SchoolId == _SchoolId)
+                .Select(sp => new GradeDTO
                 {
-                    Cost = sp.Cost,
-                    CourseNo = sp.CourseNo,
+                    SchoolId = sp.SchoolId,
+                    StudentId = sp.StudentId,
                     CreatedBy = sp.CreatedBy,
                     CreatedDate = sp.CreatedDate,
-                    Description = sp.Description,
+                    SectionId = sp.SectionId,
                     ModifiedBy = sp.ModifiedBy,
                     ModifiedDate = sp.ModifiedDate,
-                    Prerequisite = sp.Prerequisite
+                    GradeTypeCode = sp.GradeTypeCode,
+                    GradeCodeOccurrence = sp.GradeCodeOccurrence,
+                    NumericGrade = sp.NumericGrade,
+                    Comments = sp.Comments
                 }).FirstOrDefaultAsync();
             return Ok(lst);
         }
 
 
         [HttpPost]
-        [Route("PostCourse")]
-        public async Task<IActionResult> PostCourse([FromBody] CourseDTO _CourseDTO)
+        [Route("PostGrade")]
+        public async Task<IActionResult> PostGrade([FromBody] GradeDTO _GradeDTO)
         {
             try
             {
-                Course c = await _context.Courses.Where(x => x.CourseNo == _CourseDTO.CourseNo).FirstOrDefaultAsync();
+                Grade c = await _context.Grades.Where(x => x.SchoolId == _GradeDTO.SchoolId).FirstOrDefaultAsync();
 
                 if (c == null)
                 {
-                    c = new Course
+                    c = new Grade
                     {
-                        Cost = _CourseDTO.Cost,
-                        Description = _CourseDTO.Description,
-                        Prerequisite = _CourseDTO.Prerequisite
+                        NumericGrade = _GradeDTO.NumericGrade,
+                        Comments = _GradeDTO.Comments
                     };
-                    _context.Courses.Add(c);
+                    _context.Grades.Add(c);
                     await _context.SaveChangesAsync();
                 }
             }
@@ -130,20 +136,19 @@ namespace CSBA6.Server.Controllers.app
 
 
         [HttpPut]
-        [Route("PutCourse")]
-        public async Task<IActionResult> PutCourse([FromBody] CourseDTO _CourseDTO)
+        [Route("PutGrade")]
+        public async Task<IActionResult> PutGrade([FromBody] GradeDTO _GradeDTO)
         {
             try
             {
-                Course c = await _context.Courses.Where(x => x.CourseNo == _CourseDTO.CourseNo).FirstOrDefaultAsync();
+                Grade c = await _context.Grades.Where(x => x.SchoolId == _GradeDTO.SchoolId).FirstOrDefaultAsync();
 
                 if (c != null)
                 {
-                    c.Description = _CourseDTO.Description;
-                    c.Cost = _CourseDTO.Cost;
-                    c.Prerequisite = _CourseDTO.Prerequisite;
+                    c.NumericGrade = _GradeDTO.NumericGrade;
+                    c.Comments = _GradeDTO.Comments;
 
-                    _context.Courses.Update(c);
+                    _context.Grades.Update(c);
                     await _context.SaveChangesAsync();
                 }
             }
@@ -167,16 +172,16 @@ namespace CSBA6.Server.Controllers.app
 
 
         [HttpDelete]
-        [Route("DeleteCourse/{_CourseNo}")]
-        public async Task<IActionResult> DeleteCourse(int _CourseNo)
+        [Route("DeleteGrade/{_SchoolId}")]
+        public async Task<IActionResult> DeleteGrade(int _SchoolId)
         {
             try
             {
-                Course c = await _context.Courses.Where(x => x.CourseNo == _CourseNo).FirstOrDefaultAsync();
+                Grade c = await _context.Grades.Where(x => x.SchoolId == _SchoolId).FirstOrDefaultAsync();
 
                 if (c != null)
                 {
-                    _context.Courses.Remove(c);
+                    _context.Grades.Remove(c);
                     await _context.SaveChangesAsync();
                 }
             }

@@ -33,9 +33,9 @@ namespace CSBA6.Server.Controllers.app
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CourseController : BaseController
+    public class StudentController : BaseController
     {
-        public CourseController(DOOROracleContext _DBcontext,
+        public StudentController(DOOROracleContext _DBcontext,
             OraTransMsgs _OraTransMsgs)
             : base(_DBcontext, _OraTransMsgs)
 
@@ -44,63 +44,80 @@ namespace CSBA6.Server.Controllers.app
 
 
         [HttpGet]
-        [Route("GetCourse")]
-        public async Task<IActionResult> GetCourse()
+        [Route("GetStudent")]
+        public async Task<IActionResult> GetStudent()
         {
-            List<CourseDTO> lst = await _context.Courses
-                .Select(sp => new CourseDTO
+            List<StudentDTO> lst = await _context.Students
+                .Select(sp => new StudentDTO
                 {
-                    Cost = sp.Cost,
-                    CourseNo = sp.CourseNo,
+                    StudentId = sp.StudentId,
+                    SchoolId = sp.SchoolId,
+                    Salutation = sp.Salutation,
                     CreatedBy = sp.CreatedBy,
                     CreatedDate = sp.CreatedDate,
-                    Description = sp.Description,
+                    FirstName = sp.FirstName,
+                    LastName = sp.LastName,
                     ModifiedBy = sp.ModifiedBy,
                     ModifiedDate = sp.ModifiedDate,
-                    Prerequisite = sp.Prerequisite
+                    StreetAddress = sp.StreetAddress,
+                    Zip = sp.Zip,
+                    Phone = sp.Phone,
+                    Employer = sp.Employer,
+                    RegistrationDate = sp.RegistrationDate
                 }).ToListAsync();
             return Ok(lst);
         }
 
 
         [HttpGet]
-        [Route("GetCourse/{_CourseNo}")]
-        public async Task<IActionResult> GetCourse(int _CourseNo)
+        [Route("GetStudent/{_StudentId}")]
+        public async Task<IActionResult> GetStudent(int _StudentId)
         {
-            CourseDTO? lst = await _context.Courses
-                .Where(x => x.CourseNo == _CourseNo)
-                .Select(sp => new CourseDTO
+            StudentDTO? lst = await _context.Students
+                .Where(x => x.StudentId == _StudentId)
+                .Select(sp => new StudentDTO
                 {
-                    Cost = sp.Cost,
-                    CourseNo = sp.CourseNo,
+                    StudentId = sp.StudentId,
+                    SchoolId = sp.SchoolId,
+                    Salutation = sp.Salutation,
                     CreatedBy = sp.CreatedBy,
                     CreatedDate = sp.CreatedDate,
-                    Description = sp.Description,
+                    FirstName = sp.FirstName,
+                    LastName = sp.LastName,
                     ModifiedBy = sp.ModifiedBy,
                     ModifiedDate = sp.ModifiedDate,
-                    Prerequisite = sp.Prerequisite
+                    StreetAddress = sp.StreetAddress,
+                    Zip = sp.Zip,
+                    Phone = sp.Phone,
+                    Employer = sp.Employer,
+                    RegistrationDate = sp.RegistrationDate
                 }).FirstOrDefaultAsync();
             return Ok(lst);
         }
 
 
         [HttpPost]
-        [Route("PostCourse")]
-        public async Task<IActionResult> PostCourse([FromBody] CourseDTO _CourseDTO)
+        [Route("PostStudent")]
+        public async Task<IActionResult> PostStudent([FromBody] StudentDTO _StudentDTO)
         {
             try
             {
-                Course c = await _context.Courses.Where(x => x.CourseNo == _CourseDTO.CourseNo).FirstOrDefaultAsync();
+                Student c = await _context.Students.Where(x => x.StudentId == _StudentDTO.StudentId).FirstOrDefaultAsync();
 
                 if (c == null)
                 {
-                    c = new Course
+                    c = new Student
                     {
-                        Cost = _CourseDTO.Cost,
-                        Description = _CourseDTO.Description,
-                        Prerequisite = _CourseDTO.Prerequisite
+                        Salutation = _StudentDTO.Salutation,
+                        FirstName = _StudentDTO.FirstName,
+                        LastName = _StudentDTO.LastName,
+                        StreetAddress = _StudentDTO.StreetAddress,
+                        Zip = _StudentDTO.Zip,
+                        Phone = _StudentDTO.Phone,
+                        Employer = _StudentDTO.Employer,
+                        RegistrationDate = _StudentDTO.RegistrationDate
                     };
-                    _context.Courses.Add(c);
+                    _context.Students.Add(c);
                     await _context.SaveChangesAsync();
                 }
             }
@@ -130,20 +147,25 @@ namespace CSBA6.Server.Controllers.app
 
 
         [HttpPut]
-        [Route("PutCourse")]
-        public async Task<IActionResult> PutCourse([FromBody] CourseDTO _CourseDTO)
+        [Route("PutStudent")]
+        public async Task<IActionResult> PutStudent([FromBody] StudentDTO _StudentDTO)
         {
             try
             {
-                Course c = await _context.Courses.Where(x => x.CourseNo == _CourseDTO.CourseNo).FirstOrDefaultAsync();
+                Student c = await _context.Students.Where(x => x.StudentId == _StudentDTO.StudentId).FirstOrDefaultAsync();
 
                 if (c != null)
                 {
-                    c.Description = _CourseDTO.Description;
-                    c.Cost = _CourseDTO.Cost;
-                    c.Prerequisite = _CourseDTO.Prerequisite;
+                    c.Salutation = _StudentDTO.Salutation;
+                    c.FirstName = _StudentDTO.FirstName;
+                    c.LastName = _StudentDTO.LastName;
+                    c.StreetAddress = _StudentDTO.StreetAddress;
+                    c.Zip = _StudentDTO.Zip;
+                    c.Phone = _StudentDTO.Phone;
+                    c.Employer = _StudentDTO.Employer;
+                    c.RegistrationDate = _StudentDTO.RegistrationDate;
 
-                    _context.Courses.Update(c);
+                    _context.Students.Update(c);
                     await _context.SaveChangesAsync();
                 }
             }
@@ -167,16 +189,16 @@ namespace CSBA6.Server.Controllers.app
 
 
         [HttpDelete]
-        [Route("DeleteCourse/{_CourseNo}")]
-        public async Task<IActionResult> DeleteCourse(int _CourseNo)
+        [Route("DeleteStudent/{_StudentId}")]
+        public async Task<IActionResult> DeleteStudent(int _StudentId)
         {
             try
             {
-                Course c = await _context.Courses.Where(x => x.CourseNo == _CourseNo).FirstOrDefaultAsync();
+                Student c = await _context.Students.Where(x => x.StudentId == _StudentId).FirstOrDefaultAsync();
 
                 if (c != null)
                 {
-                    _context.Courses.Remove(c);
+                    _context.Students.Remove(c);
                     await _context.SaveChangesAsync();
                 }
             }
